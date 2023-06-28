@@ -1,6 +1,6 @@
 class siteController{
     homepage(req , res){
-        res.send('Home Page')
+        res.json(req.session.auth)
     }
     search(){{
     }}

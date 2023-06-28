@@ -1,43 +1,64 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 import userService from '../service/user.service'
 import passport from 'passport';
+import dotenv from 'dotenv'
+dotenv.config()
 class UserController{
     async loginWithGoogle(){
         try {
-            const CLIENT_ID = "897276465364-62fqb5bdpo6qagaqsk6nmrdl1m223203.apps.googleusercontent.com"
-        const CLIENT_SECRET="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"
         passport.use(new GoogleStrategy({
-            clientID: CLIENT_ID,
-            clientSecret: CLIENT_SECRET,
+            clientID: process.env.CLIENT_ID, // cau hinh ID va secret cua gg
+            clientSecret: process.env.CLIENT_SECRET,
             callbackURL: "http://localhost:3000/user/google/callback"
           },
-                async function(accessToken, refreshToken, profile, cb) {
-                    // console.log(profile)
-                    const data ={
-                        email:profile.emails[0].value,
-                        fullName: profile.displayName,
-                        provider: profile.provider,
-                        avatar: profile.photos[0].value
+                async function(accessToken, refreshToken, profile, done) {
+                    let user = await userService.findByEmail({email: profile.emails[0].value})
+                    if(user){
+                       return done(null, user) 
                     }
-                    const result = await userService.create(data)
-                    console.log(result)
+                    else{
+                        const data ={
+                            email:profile.emails[0].value,
+                            fullName: profile.displayName,
+                            provider: profile.provider,
+                            avatar: profile.photos[0].value
+                        }
+                         user = await userService.create(data)
+                        return done(null, user) 
+                    }
+
                 }
             )
         );
         
-        passport.serializeUser(function(user, done){
-            done(null, user.id);
-        });
-    
-        passport.deserializeUser(function(id, done) {
-            User.findById(id, function(err, user) {
-                done(err, user);
-            });
-        });
+        passport.serializeUser(function(user, done) {
+            // console.log("123544545434" +user)
+            done(null, {user:user});
+          });
+          
+          passport.deserializeUser(function(user, done) {
+            // console.log('thienthanh' + user)
+            done(null, user);
+          });
         } catch (error) {
             console.log(error);
         }
         
+    }
+
+    logInSuccess(req, res, next){
+        try {
+            req.session.auth={
+                user:{...req.user._doc},
+                isLogin: true,
+            }
+
+            // console.log('thienthanh');
+        res.redirect('/')
+            
+        } catch (error) {
+            
+        }
     }
 }
 
