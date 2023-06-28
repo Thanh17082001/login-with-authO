@@ -1,5 +1,4 @@
 import express from 'express'
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
 import userController from '../controller/user.controller'
 import passport from 'passport'
 const router = express.Router()

@@ -32,12 +32,10 @@ class UserController{
         );
         
         passport.serializeUser(function(user, done) {
-            // console.log("123544545434" +user)
             done(null, {user:user});
           });
           
           passport.deserializeUser(function(user, done) {
-            // console.log('thienthanh' + user)
             done(null, user);
           });
         } catch (error) {
@@ -46,20 +44,6 @@ class UserController{
         
     }
 
-    logInSuccess(req, res, next){
-        try {
-            req.session.auth={
-                user:{...req.user._doc},
-                isLogin: true,
-            }
-
-            // console.log('thienthanh');
-        res.redirect('/')
-            
-        } catch (error) {
-            
-        }
-    }
 }
 
 module.exports = new UserController;
