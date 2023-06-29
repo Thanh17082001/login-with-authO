@@ -4,7 +4,15 @@ import expressSession from 'express-session';
 import router from './router/index'
 import passport from 'passport';
 import dotenv from 'dotenv'
+import cors from 'cors'
+
+
 const app = express()
+
+
+app.use(cors({credentials: true, origin: 'http://localhost:8080'}))
+
+
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
@@ -15,10 +23,12 @@ app.use(expressSession({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
+}))
 
-})) 
+// app.use(passport.authenticate('google'))
 app.use(passport.initialize());
 app.use(passport.session());
+
 // connect database
 connectDb()
 

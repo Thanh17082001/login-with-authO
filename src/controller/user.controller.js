@@ -44,6 +44,10 @@ class UserController{
         
     }
 
+    userInfo(req, res){
+        res.json(req.session.auth)
+    }
+
 }
 
 module.exports = new UserController;
