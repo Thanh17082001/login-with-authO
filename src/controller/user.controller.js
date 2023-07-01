@@ -2,6 +2,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 import userService from '../service/user.service'
 import passport from 'passport';
 import dotenv from 'dotenv'
+import jwt from 'jsonwebtoken'
 dotenv.config()
 class UserController{
     async loginWithGoogle(){

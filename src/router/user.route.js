@@ -1,5 +1,6 @@
 import express from 'express'
 import userController from '../controller/user.controller'
+import jwt from 'jsonwebtoken'
 import passport from 'passport'
 
 const router = express.Router()
@@ -21,11 +22,13 @@ function isLogged(req, res, next){
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email']}))
 router.get('/google/callback', passport.authenticate('google', { failureRedirect:'/user'}), isLogged,(req , res)=>{
-   // chuyển hướng về vue
     res.redirect(`http://localhost:8080/home`);
 })
-router.get('/user-info',(req, res)=>{
-    res.json(req.session.auth)
+router.get('/user-info',userController.userInfo)
+
+router.get('/logout', (req, res) =>{
+    req.session.auth=undefined
+    res.json(true)
 })
 
 
